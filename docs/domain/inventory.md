@@ -1,8 +1,9 @@
 # Domain: Inventory Management & Movement Ledgers
 
-**Document Version:** 1.0.0  
+**Document Version:** 2.0.0  
 **Phase:** Phase 1 — Product Definition & Business Requirements  
 **Domain Code:** `13-INVENTORY`  
+**Status:** Approved Specification (DEC-014 Approved)  
 
 ---
 
@@ -50,6 +51,7 @@ graph TD
         M8["DAMAGE_WRITEOFF<br/>Broken lens or defective frame"]
         M9["SUPPLIER_RETURN<br/>Defective batch returned to vendor"]
         M10["AUDIT_DEFICIT<br/>Shrinkage/theft detected during count"]
+        M11["EMERGENCY_NEGATIVE_OVERRIDE<br/>Audited manager exception sale"]
     end
 ```
 
@@ -93,3 +95,24 @@ sequenceDiagram
 - Any discrepancy requires a formal `stock_adjustment` record with manager sign-off:
   - Discrepancy positive: logs `AUDIT_SURPLUS`.
   - Discrepancy negative: logs `AUDIT_DEFICIT` with reason code (e.g., `SHRINKAGE`, `THEFT`, `UNRECORDED_SAMPLE`).
+
+### 4.4 Invariant Enforcement & Emergency Negative Inventory Exception (DEC-014)
+- **Standard Invariant:**
+  $$\text{Available Stock} \ge \text{Requested Quantity}$$
+  Under normal retail counter operations, checkout is **strictly blocked** if the requested variant has zero or insufficient available stock.
+- **Emergency Negative Inventory Exception Workflow:**
+  When a physical frame exists on the retail shelf but has not yet been checked into system inventory (e.g., newly arrived un-unpacked vendor delivery):
+  1. Cashier attempts to add item; system prompts with stock-out warning.
+  2. Manager provides explicit authenticated authorization override.
+  3. Cashier selects a mandatory reason code (e.g., `PHYSICAL_STOCK_PRESENT_UNINTAKEN`, `SUPPLIER_DIRECT_HANDOVER`).
+  4. System logs an `EMERGENCY_NEGATIVE_OVERRIDE` movement in `inventory_movements`, driving available stock to a negative integer temporarily.
+  5. An immutable audit record is committed capturing:
+     - `user_id` (Cashier)
+     - `authorized_by_user_id` (Manager)
+     - `tenant_id` and `store_id`
+     - `device_id`
+     - `sale_id` / `transaction_id`
+     - `product_variant_id`
+     - `quantity`
+     - `timestamp`
+  6. Reconciling goods receipt or transfer immediately offsets the negative balance upon intake.

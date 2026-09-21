@@ -66,14 +66,14 @@ Every functional requirement in Super Optical V2 is structured with mandatory en
 ## 3. Clinical & Prescription Requirements
 
 ### FR-CLINICAL-001: Record Optical Refraction Examination
-- **Description:** Record subjective and objective vision refraction measurements for right (OD) and left (OS) eyes.
+- **Description:** Record subjective and objective vision refraction measurements for right (OD) and left (OS) eyes as a complimentary, free optical service (Price = ₹0).
 - **Actor:** Optometrist
 - **Preconditions:** Customer or family member profile selected in clinical queue.
-- **Expected Behavior:** Optometrist enters SPH, CYL, AXIS, ADD, PD, and visual acuity. System auto-calculates transposed values, checks diopter ranges, and saves examination.
+- **Expected Behavior:** Optometrist enters SPH, CYL, AXIS, ADD, PD, and visual acuity. System auto-calculates transposed values, checks diopter ranges, and saves examination. No service charge or tax is levied.
 - **Validation:** Diopter steps in $0.25\text{ D}$; Axis mandatory ($1^\circ - 180^\circ$) if Cylinder $\neq 0$; PD between $45 - 75\text{ mm}$.
 - **Permission:** `clinical:examination_create`
 - **Data Affected:** `eye_examinations`, `eye_examination_measurements`
-- **Acceptance Criteria:** Refraction record saves successfully; cannot be saved if Cylinder is entered without an Axis.
+- **Acceptance Criteria:** Refraction record saves successfully; cannot be saved if Cylinder is entered without an Axis; examination is registered as a ₹0 clinical record.
 - **Priority:** `MUST_HAVE`
 - **Implementation Phase:** Phase 3
 
@@ -125,11 +125,11 @@ Every functional requirement in Super Optical V2 is structured with mandatory en
 - **Description:** Record every physical stock addition, reduction, transfer, or audit adjustment in `inventory_movements`.
 - **Actor:** System Engine, Inventory Manager, Store Manager
 - **Preconditions:** Valid store and product variant context.
-- **Expected Behavior:** Inserts immutable movement row, computes new balance after, and updates current `store_inventory` snapshot.
-- **Validation:** Movement type must be an approved business code; reason text required for manual adjustments.
-- **Permission:** `inventory:adjust_stock`
-- **Data Affected:** `inventory_movements`, `store_inventory`
-- **Acceptance Criteria:** No quantity change can occur in `store_inventory` without a corresponding `inventory_movements` record.
+- **Expected Behavior:** Inserts immutable movement row, computes new balance after, and updates current `store_inventory` snapshot. Normally enforces `Available Stock >= Requested Quantity`. Emergency negative inventory is strictly an audited exception requiring manager authorization, mandatory reason code, and comprehensive audit logging.
+- **Validation:** Movement type must be an approved business code; reason text required for manual adjustments and emergency negative inventory overrides.
+- **Permission:** `inventory:adjust_stock`, `inventory:override_negative`
+- **Data Affected:** `inventory_movements`, `store_inventory`, `audit_logs`
+- **Acceptance Criteria:** No quantity change can occur without an `inventory_movements` record; emergency negative stock events log manager attribution and reason code.
 - **Priority:** `MUST_HAVE`
 - **Implementation Phase:** Phase 5
 
@@ -238,14 +238,14 @@ Every functional requirement in Super Optical V2 is structured with mandatory en
 - **Implementation Phase:** Phase 7
 
 ### FR-TAX-001: Configurable Indian GST Tax Calculation
-- **Description:** Calculate CGST, SGST, or IGST based on store state and customer address according to date-effective HSN rate schedules.
+- **Description:** Calculate CGST, SGST, or IGST based on store state and customer address according to date-effective HSN rate schedules (DEC-016).
 - **Actor:** System Calculation Engine
 - **Preconditions:** Store state and customer state resolved; product tax categories mapped.
-- **Expected Behavior:** Applies 6% CGST + 6% SGST for intra-state sales; applies 12% IGST for inter-state sales; generates itemized tax summary.
+- **Expected Behavior:** Applies 2.5% CGST + 2.5% SGST for intra-state sales and 5% IGST for inter-state sales on spectacle frames (HSN 9003) and corrective lenses (HSN 9001/9004) by default; sunglasses are admin-configurable; eye exams are ₹0 free service. Generates itemized tax summary.
 - **Validation:** Tax rates must never be hard-coded; resolved dynamically from database schedules.
 - **Permission:** Internal system calculation
 - **Data Affected:** `sale_taxes`, `sale_items`
-- **Acceptance Criteria:** Changing store location dynamically toggles between CGST/SGST split and IGST without code modification.
+- **Acceptance Criteria:** Changing store location dynamically toggles between CGST/SGST split and IGST without code modification; default optical items compute at 5% GST.
 - **Priority:** `MUST_HAVE`
 - **Implementation Phase:** Phase 8
 
@@ -282,14 +282,14 @@ Every functional requirement in Super Optical V2 is structured with mandatory en
 ## 9. Cash Management, Reporting & System Requirements
 
 ### FR-CASH-001: Daily Register Session & Denomination Close
-- **Description:** Open cash drawer with opening float and close with physical denomination count and variance reconciliation.
+- **Description:** Open cash drawer with opening float and close with physical denomination count and variance reconciliation (DEC-017).
 - **Actor:** Cashier, Store Manager
 - **Preconditions:** Store register configured.
-- **Expected Behavior:** Opens session; tracks cash transactions; at close, prompts for count of ₹500, ₹200, ₹100, etc. notes; computes variance; flags discrepancies.
-- **Validation:** Physical cash count required; variance requires reason text and manager approval.
+- **Expected Behavior:** Opens session; tracks cash transactions; at close, prompts for count of ₹500, ₹200, ₹100, etc. notes; computes variance; flags discrepancies against configurable threshold (default ₹500).
+- **Validation:** Physical cash count required; variance $|Variance| > ₹500$ requires mandatory manager approval and leaves session in `PENDING_APPROVAL` status.
 - **Permission:** `cash:open_session`, `cash:close_session`, `cash:approve_variance`
-- **Data Affected:** `cash_sessions`, `cash_transactions`
-- **Acceptance Criteria:** Difference between expected cash and counted cash calculates accurately; variance $> ₹100$ alerts manager.
+- **Data Affected:** `cash_sessions`, `cash_transactions`, `audit_logs`
+- **Acceptance Criteria:** Difference between expected cash and counted cash calculates accurately; variance $> ₹500$ requires manager approval before closing.
 - **Priority:** `MUST_HAVE`
 - **Implementation Phase:** Phase 7
 

@@ -1,8 +1,9 @@
 # Domain: Configurable GST & Tax Engine
 
-**Document Version:** 1.0.0  
+**Document Version:** 2.0.0  
 **Phase:** Phase 1 — Product Definition & Business Requirements  
 **Domain Code:** `12-TAX-GST`  
+**Status:** Approved Specification (DEC-016 Approved)  
 
 ---
 
@@ -10,7 +11,7 @@
 
 > [!IMPORTANT]
 > **Configurable Rule Engine Over Hard-Coded Tax Rates**  
-> Tax laws change over time. Super Optical V2 strictly **forbids** hard-coding static tax percentages (e.g. `price * 0.18`) into business checkout logic.  
+> Tax laws and schedules change over time. Super Optical V2 strictly **forbids** hard-coding static tax percentages (e.g. `price * 0.18`) into business checkout logic.  
 > All taxes are calculated via a date-effective, category-driven tax engine encapsulated in `@super-optical/tax`.
 
 ---
@@ -33,25 +34,28 @@ graph TD
 ```
 
 - **Intra-State Sale (Store State == Customer State):** Tax is divided equally into **Central GST (CGST)** and **State GST (SGST)**.  
-  *(Example: 12% total GST $\rightarrow$ 6% CGST + 6% SGST)*
+  *(Example: 5% total GST $\rightarrow$ 2.5% CGST + 2.5% SGST)*
 - **Inter-State Sale (Store State $\neq$ Customer State):** Tax is charged as **Integrated GST (IGST)**.  
-  *(Example: 12% total GST $\rightarrow$ 12% IGST)*
+  *(Example: 5% total GST $\rightarrow$ 5% IGST)*
 
 ---
 
-## 3. Optical Tax Schedules & HSN Classifications
+## 3. Optical Tax Schedules & HSN Classifications (DEC-016)
+
+The tax engine is initialized with Indian optical standard default schedules while remaining fully admin-configurable:
+
+| HSN Code | Description | Default Optical Products | Default GST Rate | Tax Breakdown (Intra-State) | Admin Configurable? |
+|:---:|:---|:---|:---:|:---:|:---:|
+| `9003` | Spectacle frames and mountings | Optical frames, spectacle mountings, frame parts | **5%** | 2.5% CGST + 2.5% SGST | Yes |
+| `9001` | Spectacle lenses & contact lenses | Single vision, bifocal, progressive ophthalmic lenses, contact lenses | **5%** | 2.5% CGST + 2.5% SGST | Yes |
+| `9004` | Corrective spectacles | Assembled corrective vision spectacles | **5%** | 2.5% CGST + 2.5% SGST | Yes |
+| `9004` | Non-corrective sunglasses | Fashion sunglasses, cosmetic non-powered eyewear | **18%** | 9.0% CGST + 9.0% SGST | Yes (Tenant Configurable) |
+| `3307` | Contact lens solutions | Multi-purpose lens disinfecting and lubricating solutions | **18%** | 9.0% CGST + 9.0% SGST | Yes |
+| `9983` | Professional clinical optometry | Clinical eye refraction examination | **FREE (₹0)** | Non-Taxable / Free Service | Not a sale line item |
 
 > [!NOTE]
-> **Legal Tax Schedule Verification: Subject to Business/Legal Confirmation**  
-> While the engine is fully configurable, default Indian optical HSN mappings are initialized as:
-
-| HSN Code | Description | Default Optical Products | Standard GST Rate (Configurable) |
-|:---:|:---|:---|:---:|
-| `9003` | Frames and mountings for spectacles | Spectacle frames, spectacle mountings, parts | $12\%$ (6% CGST + 6% SGST) |
-| `9001` | Contact lenses & spectacle lenses | Single vision, bifocal, progressive ophthalmic lenses | $12\%$ (6% CGST + 6% SGST) |
-| `9004` | Corrective / protective sunglasses | Non-corrective fashion sunglasses | $18\%$ (9% CGST + 9% SGST) |
-| `3307` | Contact lens solutions | Multi-purpose disinfecting lens solutions | $18\%$ (9% CGST + 9% SGST) |
-| `9983` | Professional healthcare / optometry service | Eye examination fee (exempt in certain jurisdictions) | $0\%$ / Exempt |
+> **Clinical Eye Test Billing Policy (DEC-016):**  
+> Clinical eye refraction testing is treated as a **free healthcare service (Price = ₹0)**. It creates clinical refraction records, visual acuity charts, and optical prescriptions, but does not incur service charges or GST.
 
 ---
 
@@ -95,12 +99,14 @@ erDiagram
 
 ---
 
-## 5. Tax Computation & Invoice Breakdown
+## 5. Tax Computation & Historical Snapshot Preservation
 
-1. **Date-Effective Rate Resolution:** When calculating taxes, the system looks up the schedule where:
-   $$\text{effective\_from} \le \text{Sale Date} \le \text{effective\_to}$$
-2. **Itemized Fiscal Invoicing:** Tax invoices print an explicit GST summary table:
-   - Line items grouped by HSN code.
-   - Total taxable amount per HSN.
-   - Exact CGST, SGST, and IGST currency amounts.
-3. **Statutory GSTR-1 Reporting:** Exports standardized JSON/CSV formats categorizing B2B sales (with customer GSTIN) and B2C sales (B2C Large vs B2C Small) matching Indian GST portal upload formats.
+1. **Date-Effective Rate Resolution:** When calculating taxes at POS checkout, the system looks up the active schedule where:
+   $$\text{effective\_from} \le \text{transaction\_date} \le \text{effective\_to}$$
+2. **Immutable Snapshot on Invoice:**
+   - Once an invoice is confirmed, tax components (`cgst_amount`, `sgst_amount`, `igst_amount`, `rate_applied`, `hsn_code`) are immutably copied directly onto the `sale_items` and `sale_tax_breakdowns` tables.
+   - Future modifications to tax categories or national GST revisions will **never alter historical invoices** or retroactively change past tax liabilities.
+3. **Tax Inclusive vs Exclusive Calculations:**
+   - Retail optical display prices are typically tax-inclusive. The engine extracts the base taxable value deterministically:
+     $$\text{Taxable Value} = \text{Round}\left(\frac{\text{Gross Price}}{1 + \text{Tax Rate}}, 2\right)$$
+     $$\text{Total Tax} = \text{Gross Price} - \text{Taxable Value}$$

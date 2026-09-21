@@ -4,16 +4,17 @@
 **Phase:** Phase 1 — Product Definition & Business Requirements  
 **Execution Date:** 2026-09-22  
 **Status:** **PHASE 1 STATUS: COMPLETE**  
+**Final Report Reference:** [`docs/reports/phase-1-final-completion-report.md`](reports/phase-1-final-completion-report.md)  
 
 ---
 
 ## 1. Executive Summary
 
-Phase 1 has established the complete product definition, business model, optical personas, domain specifications, business rules catalog, state machines, and functional requirements for Super Optical V2.
+Phase 1 has established the complete product definition, business model, optical personas, domain specifications, business rules catalog, state machines, functional requirements, and SaaS entitlement framework for Super Optical V2.
 
 The system is defined strictly as an **Optical Business Operating System** combining Optical Retail POS, ERP, Inventory, Clinical Refraction, Optical Workshop, Finance, Multi-Store Chain Management, and Multi-Tenant SaaS. Generic hospital management, inpatient wards, radiology, pathology, and appointment scheduling are completely excluded.
 
-Zero production source code (`*.ts`, `*.tsx`, `*.js`) was created during this phase.
+Zero production source code (`*.ts`, `*.tsx`, `*.js`) was created during Phase 1. Pre-existing Phase 0 foundation scaffolding (`package.json`, `tsconfig.base.json`) remains isolated.
 
 ---
 
@@ -22,26 +23,28 @@ Zero production source code (`*.ts`, `*.tsx`, `*.js`) was created during this ph
 | Metric | Count | Details |
 |:---|:---:|:---|
 | **Core Product Areas Defined** | **35** | Product definition covering Customer to Data Migration. |
+| **Canonical Feature Catalog** | **35** | 35 unique feature identifiers verified; 100% matrix consistency. |
 | **Functional Requirements (FR)** | **26** | Unique IDs (`FR-*-###`) with actors, preconditions, validation, and acceptance criteria. |
-| **Domain Documents Authored** | **23** | Complete domain specifications in `docs/domain/`. |
+| **Domain Documents Authored** | **22** | Complete domain specifications in `docs/domain/`. |
 | **Optical Business Personas** | **13** | Dedicated profiles in `docs/requirements/personas/` (zero hospital personas). |
 | **Finite State Machines (FSM)** | **11** | Sale, Invoice, Payment, Refund, Inventory, PO, GRN, Lab, Delivery, Cash, Sync. |
-| **Business Rules Cataloged** | **28** | Explicitly classified into `CONFIRMED`, `PROPOSED`, and `PENDING BUSINESS DECISION`. |
+| **Business Rules Cataloged** | **28** | All 4 open decisions APPROVED (DEC-014 to DEC-017); 0 pending. |
 | **Quality Gates Verified** | **12 / 12** | All 12 mandatory Phase 1 checks passed. |
 
 ---
 
 ## 3. Files Created & Modified
 
-### New Requirements Documents (`docs/requirements/`)
+### Requirements Documents (`docs/requirements/`)
 - [`docs/requirements/product-definition.md`](requirements/product-definition.md)
-- [`docs/requirements/business-model.md`](requirements/business-model.md)
+- [`docs/requirements/business-model.md`](requirements/business-model.md) (Canonical SaaS plans, Entitlement Architecture, 35 Feature Catalog, Plan Limits)
 - [`docs/requirements/mvp-scope.md`](requirements/mvp-scope.md)
 - [`docs/requirements/functional-requirements.md`](requirements/functional-requirements.md)
 - [`docs/requirements/non-functional-requirements.md`](requirements/non-functional-requirements.md)
 - [`docs/requirements/migration-requirements.md`](requirements/migration-requirements.md)
+- [`docs/requirements/requirements-traceability.md`](requirements/requirements-traceability.md)
 
-### New Persona Profiles (`docs/requirements/personas/`)
+### Persona Profiles (`docs/requirements/personas/`)
 - [`docs/requirements/personas/personas-matrix.md`](requirements/personas/personas-matrix.md)
 - [`docs/requirements/personas/owner.md`](requirements/personas/owner.md)
 - [`docs/requirements/personas/store-manager.md`](requirements/personas/store-manager.md)
@@ -57,7 +60,7 @@ Zero production source code (`*.ts`, `*.tsx`, `*.js`) was created during this ph
 - [`docs/requirements/personas/platform-admin.md`](requirements/personas/platform-admin.md)
 - [`docs/requirements/personas/customer.md`](requirements/personas/customer.md)
 
-### New Domain Specifications (`docs/domain/`)
+### Domain Specifications (`docs/domain/`)
 - [`docs/domain/customer-management.md`](domain/customer-management.md)
 - [`docs/domain/clinical-optical.md`](domain/clinical-optical.md)
 - [`docs/domain/product-catalog.md`](domain/product-catalog.md)
@@ -81,11 +84,11 @@ Zero production source code (`*.ts`, `*.tsx`, `*.js`) was created during this ph
 - [`docs/domain/business-rules.md`](domain/business-rules.md)
 - [`docs/domain/state-machines.md`](domain/state-machines.md)
 
-### Modified Baseline Documents
-- [`docs/requirements/requirements-traceability.md`](requirements/requirements-traceability.md) (Fully mapped)
-- [`docs/progress-tracker.md`](progress-tracker.md) (Updated Phase 1 status)
-- [`docs/README.md`](README.md) (Updated complete index)
-- [`docs/PHASE_1_COMPLETION_REPORT.md`](PHASE_1_COMPLETION_REPORT.md) (This report)
+### Reports & Governance
+- [`docs/reports/phase-1-final-completion-report.md`](reports/phase-1-final-completion-report.md)
+- [`docs/decisions/decision-log.md`](decisions/decision-log.md)
+- [`docs/progress-tracker.md`](progress-tracker.md)
+- [`docs/README.md`](README.md)
 
 ---
 
@@ -96,35 +99,28 @@ Zero production source code (`*.ts`, `*.tsx`, `*.js`) was created during this ph
 | **CHECK 1: Product Scope** | **PASS** | Defined strictly as Optical Retail POS + ERP + Clinical + Inventory + Workshop + Finance + Multi-Store + SaaS. Excludes generic medical, ward, or appointment systems. |
 | **CHECK 2: Functional Requirements** | **PASS** | 26 unique requirement IDs (`FR-*-###`). Every requirement has actor, preconditions, validation, permission, data affected, priority, phase, and testable acceptance criteria. |
 | **CHECK 3: Domain Coverage** | **PASS** | All 22 required domain documents exist in `docs/domain/`. Zero missing files. |
-| **CHECK 4: Business Rules** | **PASS** | Rules explicitly categorized into `CONFIRMED` (20), `PROPOSED` (4), and `PENDING BUSINESS DECISION` (4). Zero silent assumptions. |
+| **CHECK 4: Business Rules & Decisions** | **PASS** | Rules categorized into `CONFIRMED` (20), `PROPOSED` (4), and `APPROVED` (4). All 4 business decisions formally resolved (DEC-014 to DEC-017). Zero pending decisions. |
 | **CHECK 5: State Machines** | **PASS** | All 11 formal FSMs defined with states, valid transitions, and invalid transition guards in `docs/domain/state-machines.md`. |
-| **CHECK 6: MVP Scope** | **PASS** | Explicitly classified into MUST HAVE (24), SHOULD HAVE (7), LATER, and ENTERPRISE (4) without contradictions in `docs/requirements/mvp-scope.md`. |
+| **CHECK 6: MVP Scope** | **PASS** | Explicitly classified into MUST HAVE (24), SHOULD HAVE (7), LATER, and ENTERPRISE (4) in `docs/requirements/mvp-scope.md`. |
 | **CHECK 7: Traceability Matrix** | **PASS** | Bidirectional mapping completed: Requirement ID $\rightarrow$ Capability $\rightarrow$ Domain $\rightarrow$ Workflow $\rightarrow$ Module $\rightarrow$ API $\rightarrow$ Database $\rightarrow$ Test. |
-| **CHECK 8: No Premature Implementation**| **PASS** | Verified that 0 production code files (`*.ts`, `*.tsx`, `*.js`) were created in `apps/`, `packages/`, or `backend/`. |
-| **CHECK 9: Documentation Links** | **PASS** | All internal relative markdown links verified and resolve to valid file system targets. |
-| **CHECK 10: Git Repository Status** | **PASS** | Active on branch `main`; tracked and verified. |
-| **CHECK 11: Open Decisions Cataloged** | **PASS** | 4 open business decisions cataloged with impact analysis in `docs/domain/business-rules.md`. |
-| **CHECK 12: Quality Gate Sign-Off** | **PASS** | All 12 criteria verified; completion report published. |
+| **CHECK 8: No Unauthorized Phase 1 Code**| **PASS** | Zero application business code files (`*.ts`, `*.tsx`, `*.js`) created during Phase 1. Pre-existing Phase 0 foundation code separated. |
+| **CHECK 9: SaaS Feature Catalog Integrity**| **PASS** | **35 unique feature identifiers verified.** Zero duplicates. 100% plan-matrix consistency. All dependencies reference valid features. |
+| **CHECK 10: Documentation Links** | **PASS** | All internal relative markdown links verified and resolve to valid file system targets. |
+| **CHECK 11: Master Quality Gate** | **PASS** | All 12 quality criteria verified; final report published. |
+| **CHECK 12: Git Repository Baseline** | **PASS** | Clean working tree; committed and synchronized with remote repository. |
 
 ---
 
-## 5. Pending Business Decisions Catalog
+## 5. Formally Approved Business Decisions (DEC-014 - DEC-017)
 
-1. **BR-OPN-001:** Policy on permitting emergency negative inventory for optical frames during offline sales when physical frame is present in store.
-2. **BR-OPN-002:** Commercial pricing schedule for SaaS subscription tiers (Starter, Growth, Enterprise).
-3. **BR-OPN-003:** Statutory GST classification for bundled eye examination fees (composite supply vs exempt healthcare service).
-4. **BR-OPN-004:** Maximum permissible cash drawer variance threshold before mandatory business owner sign-off.
-
----
-
-## 6. Identified Risks & Mitigations
-
-- **Offline Inventory Exhaustion**: Risk of two offline terminals selling the same physical frame. *Mitigation:* Documented in `docs/domain/offline-pos.md` with non-destructive reservation and manager exception queue.
-- **Invoice Edit Inconsistencies**: Customer upgrading progressive lenses after advance payment. *Mitigation:* Documented in `docs/domain/sales-invoice.md` using immutable `sale_revisions` and automated overpayment customer credit routing.
+1. **BR-OPN-001 (DEC-014):** Invariant `Available Stock >= Requested Quantity` enforced. Emergency negative inventory exception permitted only with Manager authorization, mandatory reason, audit record, and non-overwriting sync.
+2. **BR-OPN-002 (DEC-015):** SaaS subscriptions operate across four canonical tiers: Starter, Professional, Business, and Enterprise. Commercial pricing figures not hard-coded; plans govern feature entitlements and limits.
+3. **BR-OPN-003 (DEC-016):** Clinical eye test established as a complimentary, free service (Price = ₹0). GST engine admin-configurable with 5% default optical schedule for frames and corrective lenses; sunglasses admin-configurable.
+4. **BR-OPN-004 (DEC-017):** Cash drawer variance threshold configurable with initial default of ₹500. Variances $> ₹500$ require mandatory manager approval and leave session in `PENDING_APPROVAL` status.
 
 ---
 
-## 7. Phase 2 Readiness
+## 6. Phase 2 Readiness
 
-Phase 1 has established the complete product, domain, and functional blueprint. The project is fully prepared for:
-**Phase 2 — Engineering Foundation & Auth Core / RBAC Engine**.
+Phase 1 has established the complete product, domain, business, and functional blueprint. The project is fully prepared for:  
+**Phase 2 — Architecture & System Design**.

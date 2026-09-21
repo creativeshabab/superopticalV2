@@ -1,8 +1,8 @@
 # Domain: Business Rules Catalog
 
-**Document Version:** 1.0.0  
+**Document Version:** 2.0.0  
 **Phase:** Phase 1 — Product Definition & Business Requirements  
-**Classification:** Canonical Business Invariants  
+**Classification:** Canonical Business Invariants (All Decisions Approved)  
 
 ---
 
@@ -11,7 +11,10 @@
 Every rule in Super Optical V2 is strictly categorized into one of three statuses:
 - **`CONFIRMED`**: Core architectural invariant approved in the Master Build Specification. Must not be altered.
 - **`PROPOSED`**: Sound domain standard formulated during Phase 1 analysis. Recommended for execution unless rejected.
-- **`PENDING BUSINESS DECISION`**: Open policy question requiring formal business or legal verification before commitment.
+- **`APPROVED`**: Formally approved business policies resolved during Phase 1 baseline consolidation.
+
+> [!NOTE]
+> All four previously open business policies (BR-OPN-001 through BR-OPN-004) have been formally **APPROVED** and resolved via Architectural Decisions DEC-014 through DEC-017. There are **zero** unresolved open policies.
 
 ---
 
@@ -62,10 +65,10 @@ Every rule in Super Optical V2 is strictly categorized into one of three statuse
 | **BR-OFF-003** | Concurrent offline stock-out conflicts must accept customer payment, record an emergency adjustment, and quarantine in a manager exception queue. | `PROPOSED` | ASSUMPTION-002 |
 | **BR-OFF-004** | The client UI must explicitly display visual sync badges (`LOCAL_PENDING`, `SYNCING`, `SERVER_CONFIRMED`, `SYNC_CONFLICT`). | `CONFIRMED` | Master Spec Sec 10 |
 
-### 2.6 Open Business Decisions (Requiring Confirmation)
-| Rule ID | Policy Question | Status | Impact / Validation |
+### 2.6 Formally Approved Business Decisions (Formerly Open Policies)
+| Rule ID | Policy Decision | Status | Implementation Details & Rationale |
 |:---|:---|:---:|:---|
-| **BR-OPN-001** | Should customer emergency negative inventory be permitted for optical frames during offline sales? | `PENDING BUSINESS DECISION` | Prevents lost retail sales vs risk of selling physically missing frames. |
-| **BR-OPN-002** | What are the exact SaaS subscription tier pricing amounts (Starter, Growth, Enterprise)? | `PENDING BUSINESS DECISION` | Documented in `docs/requirements/business-model.md`. |
-| **BR-OPN-003** | Should optometrist clinical examination fees be exempt from GST or taxed at 18% when bundled with eyewear sales? | `PENDING BUSINESS DECISION` | Indian GST legal opinion required for mixed supply vs composite supply. |
-| **BR-OPN-004** | What is the maximum permitted cash drawer variance before mandatory Owner sign-off is required? | `PENDING BUSINESS DECISION` | Standard optical store threshold proposed at ₹100. |
+| **BR-OPN-001** | Emergency Negative Inventory Exception Workflow | `APPROVED` | Normally, `Available Stock >= Requested Quantity` is strictly enforced and sales are blocked if stock is insufficient. As an audited exception, emergency negative inventory is permitted only with explicit Manager authorization, mandatory reason code, immutable audit record (user ID, manager ID, tenant ID, store ID, device ID, transaction ID, quantity, timestamp), and non-overwriting sync reconciliation. (DEC-014) |
+| **BR-OPN-002** | Canonical SaaS Subscription Tiers & Entitlements | `APPROVED` | Four canonical subscription plans established: Starter, Professional, Business, and Enterprise. Commercial pricing figures are not hard-coded in source code; plans configure feature entitlements, limits, and billing intervals. (DEC-015) |
+| **BR-OPN-003** | Free Eye Examination & Admin-Configurable GST Architecture | `APPROVED` | Optometrist eye refraction examination is a free healthcare service (Price = ₹0) and not a taxable sale item. The GST engine is admin-configurable with initial default optical rates: Spectacle Frames (HSN 9003) @ 5%, Corrective Lenses (HSN 9001) @ 5%, Contact Lenses (HSN 9001) @ 5%, Corrective Spectacles (HSN 9004) @ 5%, Sunglasses admin-configurable. Historical tax snapshots are preserved. (DEC-016) |
+| **BR-OPN-004** | Cash Register Closing Variance Threshold & Approval Workflow | `APPROVED` | Cash drawer variance threshold is configurable with an initial default of ₹500. If $\|Variance\| \le ₹500$, standard session closure is permitted with an audit note. If $\|Variance\| > ₹500$, mandatory manager sign-off and explanation are required, and the session remains in `PENDING_APPROVAL` status until approved. (DEC-017) |

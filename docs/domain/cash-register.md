@@ -1,8 +1,9 @@
 # Domain: Cash Register & Store Expense Management
 
-**Document Version:** 1.0.0  
+**Document Version:** 2.0.0  
 **Phase:** Phase 1 — Product Definition & Business Requirements  
 **Domain Code:** `24-CASH-REGISTER` / `25-EXPENSES`  
+**Status:** Approved Specification (DEC-017 Approved)  
 
 ---
 
@@ -16,7 +17,7 @@ The **Cash Register & Store Expenses** domain enforces store-level cash reconcil
 
 ```mermaid
 graph TD
-    Open[1. Open Register Session<br/>Record Opening Float Float Amount] --> Transact[2. Normal Store Operations<br/>Cash Sales, Cash Advances, Balance Collections]
+    Open[1. Open Register Session<br/>Record Opening Float Amount] --> Transact[2. Normal Store Operations<br/>Cash Sales, Cash Advances, Balance Collections]
     Transact --> MiscIn[3. Cash In / Pay-In<br/>e.g. Additional float added]
     Transact --> MiscOut[4. Cash Out / Pay-Out<br/>e.g. Bank deposit or petty cash expense]
     Transact --> Refund[5. Cash Refunds Paid Out]
@@ -24,8 +25,9 @@ graph TD
     MiscOut --> Close
     Refund --> Close
     Close --> Compare{7. Expected Cash == Counted Cash?}
-    Compare -->|Match: Variance = 0| Balanced[8. Session Balanced & Approved]
-    Compare -->|Shortage / Surplus| Variance[9. Variance Logged & Manager Sign-Off]
+    Compare -->|Match: Variance = 0| Balanced[8. Session Balanced & Closed]
+    Compare -->|Variance <= Rs 500| Permitted[9. Minor Variance Permitted with Note]
+    Compare -->|Variance > Rs 500| Escalated[10. Manager Approval Required<br/>Status: PENDING_APPROVAL]
 ```
 
 ### The Expected Cash Invariant Formula:
@@ -104,7 +106,24 @@ The breakdown is stored as an immutable audit record in the session data.
 
 ---
 
-## 5. Store Petty Cash & Expense Logging
+## 5. Cash Variance Threshold & Manager Approval Workflow (DEC-017)
+
+To balance cashier operational flow with financial accountability, cash drawer closing enforces an approved two-tier variance policy:
+
+| Variance Condition | Operational Action | Required Approvals | Session Final Status |
+|:---|:---|:---:|:---:|
+| **Zero Variance** ($\text{Variance} = 0$) | Immediate standard closing | Cashier | `CLOSED` |
+| **Minor Variance** ($0 < \|\text{Variance}\| \le ₹500$) | Cashier records descriptive reason note; system logs variance to audit ledger | Cashier | `CLOSED` |
+| **Excessive Variance** ($\|\text{Variance}\| > ₹500$) | Cashier enters mandatory reason; session flagged; manager notification dispatched | Store Manager or Owner | `PENDING_APPROVAL` $\rightarrow$ `CLOSED` |
+
+### Key Variance Rules:
+1. **Configurable Default:** The threshold is initialized at **₹500** per session by default and is admin-configurable per store or tenant.
+2. **Mandatory Manager Approval:** If the counted cash differs from expected cash by more than ₹500 (shortage or surplus), the session cannot transition to `CLOSED` without a manager's cryptographic signature or authenticated approval.
+3. **Immutable Audit Record:** Every variance record captures the cashier ID, manager approver ID, expected amount, counted amount, variance delta, denomination counts, timestamp, and explanation text.
+
+---
+
+## 6. Store Petty Cash & Expense Logging
 
 Optical retail stores frequently disburse cash from the drawer for operational necessities:
 - **Eligible Expense Categories:** Store Cleaning Supplies, Staff Tea/Refreshments, Local Delivery Travel, Minor Hardware Repair, Postage/Courier, Electricity Bill.

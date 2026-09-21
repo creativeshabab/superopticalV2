@@ -116,32 +116,65 @@ This document records all significant architectural, technological, and domain d
 
 ---
 
-## Pending Architectural Decisions
+## Approved Architectural & Business Decisions (Phase 1 Baseline)
 
 ### DEC-011: Client State Management & Offline Cache Binding
+- **Date:** 2026-09-22
 - **Topic:** Global Client State vs Offline IndexedDB Binding
-- **Status:** Pending
-- **Options Under Consideration:**
-  - Option A: Zustand for transient UI state + TanStack Query for remote queries + Dexie.js for offline persistence.
-  - Option B: Redux Toolkit + RTK Query with Dexie persistence middleware.
-- **Recommendation:** Option A (Zustand + TanStack Query + Dexie) aligns with Section 3.2 of the Master Specification and offers minimal bundle footprint.
-- **Target Resolution:** Phase 1
+- **Decision:** Adopt Option A: Zustand for transient UI state + TanStack Query for server state caching + Dexie.js for offline IndexedDB persistence.
+- **Reason:** Provides the fastest counter rendering performance, minimal JS bundle size, and cleanest decoupling between ephemeral component state and durable offline commands.
+- **Status:** Approved (DEC-011)
+
+---
 
 ### DEC-012: Database ORM / Query Builder Selection
+- **Date:** 2026-09-22
 - **Topic:** PostgreSQL Data Access Layer in NestJS
-- **Status:** Pending
-- **Options Under Consideration:**
-  - Option A: Drizzle ORM (lightweight, SQL-like, type-safe, excellent support for complex transactions and PostgreSQL RLS).
-  - Option B: Prisma (strong schema DSL, but heavier binary and less direct control over complex RLS transactions).
-  - Option C: Kysely with pg driver (type-safe query builder, high performance).
-- **Recommendation:** Option A (Drizzle ORM) provides optimal type-safety, zero binary baggage, and full support for PostgreSQL transactions and RLS policies.
-- **Target Resolution:** Phase 1
+- **Decision:** Adopt Option A: Drizzle ORM with `node-postgres` driver.
+- **Reason:** Provides compile-time type safety, zero runtime engine overhead, explicit SQL generation, and seamless integration with PostgreSQL Row-Level Security (RLS) policies.
+- **Status:** Approved (DEC-012)
+
+---
 
 ### DEC-013: WhatsApp Business API Provider Abstraction
+- **Date:** 2026-09-22
 - **Topic:** Messaging Service Gateway
-- **Status:** Pending
-- **Options Under Consideration:**
-  - Option A: Direct Meta Cloud API integration.
-  - Option B: Third-party BSP (Twilio, Gupshup, or Wati).
-- **Recommendation:** Create a provider-agnostic `NotificationProvider` interface in `@super-optical/api` supporting a pluggable driver model.
-- **Target Resolution:** Phase 1
+- **Decision:** Implement a provider-agnostic `NotificationProvider` interface in `@super-optical/api` with pluggable drivers (Meta Cloud API, Twilio, Gupshup).
+- **Reason:** Prevents vendor lock-in and allows optical stores to switch messaging vendors or use direct Meta Cloud API for lower messaging costs.
+- **Status:** Approved (DEC-013)
+
+---
+
+### DEC-014: Emergency Negative Inventory Policy (BR-OPN-001)
+- **Date:** 2026-09-22
+- **Topic:** Inventory Invariant Enforcement & Emergency Exception Handling
+- **Decision:** Standard checkout strictly blocks sales if `Available Stock < Requested Quantity`. As an audited exception, emergency negative inventory is permitted only with explicit Manager authorization, mandatory business reason code, immutable audit record (capturing user, manager, store, device, sale, variant, quantity, timestamp), and non-overwriting sync reconciliation.
+- **Reason:** Prevents lost retail sales when physical stock is present on the shelf but delayed in administrative system intake, while preserving absolute financial and audit traceability.
+- **Status:** Approved (DEC-014)
+
+---
+
+### DEC-015: SaaS Subscription Tiers & Entitlement Model (BR-OPN-002)
+- **Date:** 2026-09-22
+- **Topic:** Commercial SaaS Operating Model & Feature Governance
+- **Decision:** Establish four canonical subscription tiers: Starter, Professional, Business, and Enterprise. Commercial pricing figures are not hard-coded in source code or database schemas. Plans configure feature entitlements, limits, and billing intervals, evaluated via a two-stage authorization engine.
+- **Reason:** Enables flexible SaaS commercial packaging, tenant add-on overrides, and clean architectural separation between software code and commercial pricing.
+- **Status:** Approved (DEC-015)
+
+---
+
+### DEC-016: Clinical Eye Test Free Invariant & Admin-Configurable GST Architecture (BR-OPN-003)
+- **Date:** 2026-09-22
+- **Topic:** Clinical Eye Examination Pricing & Indian GST Tax Classification
+- **Decision:** Clinical eye refraction testing is formally established as a complimentary, free healthcare service (Price = ₹0) and not a taxable sale item. The tax engine is admin-configurable with initial default optical rates: Spectacle Frames (HSN 9003) @ 5%, Corrective Lenses (HSN 9001) @ 5%, Contact Lenses (HSN 9001) @ 5%, Corrective Spectacles (HSN 9004) @ 5%, Sunglasses admin-configurable. Historical tax snapshots are immutably preserved per invoice item.
+- **Reason:** Accurately models optical store clinical practices where eye exams are offered free to drive eyewear dispensing, while complying with Indian GST requirements through a date-effective, category-driven tax engine.
+- **Status:** Approved (DEC-016)
+
+---
+
+### DEC-017: Cash Register Variance Threshold & Manager Approval Workflow (BR-OPN-004)
+- **Date:** 2026-09-22
+- **Topic:** Cash Drawer Closing Reconciliation Threshold
+- **Decision:** Cash drawer closing variance threshold is configurable per store/tenant with an initial default of ₹500. Variances within ₹500 permit standard session closure with an audit note. Variances exceeding ₹500 require mandatory manager approval and explanation, holding the session in `PENDING_APPROVAL` status until reviewed.
+- **Reason:** Prevents operational gridlock at counter shifts for minor denomination rounding while ensuring robust managerial oversight over significant cash shortages or surpluses.
+- **Status:** Approved (DEC-017)

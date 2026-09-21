@@ -26,6 +26,7 @@
    - **OD (Oculus Dexter):** Right Eye
    - **OS (Oculus Sinister):** Left Eye
    - **OU (Oculi Uterque):** Both Eyes (used for binocular visual acuity or PD)
+4. **Free Clinical Service Invariant (DEC-016)**: Eye examination and visual acuity testing is a complimentary, free service (Price = ₹0). It is not a taxable retail sale line item, but an authoritative clinical event that produces digital prescriptions and customer medical history.
 
 ---
 

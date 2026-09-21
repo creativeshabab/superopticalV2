@@ -42,8 +42,9 @@ This document tracks progress across the 15 build phases defined in the Master S
   - Define 13 optical retail, clinical, and workshop business personas (`docs/requirements/personas/`).
   - Author comprehensive domain specifications across all 22 domain files in `docs/domain/`.
   - Formulate 26 functional requirements with unique `FR-*-###` IDs, actors, preconditions, validations, permissions, and acceptance criteria.
-  - Classify business rules into `CONFIRMED`, `PROPOSED`, and `PENDING BUSINESS DECISION`.
+  - Approve all 4 business decisions (`DEC-014` to `DEC-017`) leaving 0 pending decisions.
+  - Establish canonical SaaS plan matrix (Starter, Professional, Business, Enterprise) and verified 35-feature catalog.
   - Specify 11 formal operational state machines in `docs/domain/state-machines.md`.
   - Classify MVP scope into MUST HAVE, SHOULD HAVE, LATER, and ENTERPRISE tiers.
   - Update bidirectional Requirements Traceability Matrix.
-- **Quality Gate:** Passed all 12 Phase 1 Verification Checks (see [`docs/PHASE_1_COMPLETION_REPORT.md`](PHASE_1_COMPLETION_REPORT.md)).
+- **Quality Gate:** Passed all 12 Phase 1 Master Quality Gates (see [`docs/reports/phase-1-final-completion-report.md`](reports/phase-1-final-completion-report.md)).
