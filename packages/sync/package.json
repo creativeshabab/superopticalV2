@@ -1,0 +1,8 @@
+{
+  "name": "@super-optical/sync",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Offline command queue, sync protocol, and conflict reconciliation models",
+  "main": "src/index.ts",
+  "types": "src/index.ts"
+}

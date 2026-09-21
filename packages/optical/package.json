@@ -1,0 +1,8 @@
+{
+  "name": "@super-optical/optical",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Optical prescription formulas, transposition, lens power, and clinical domain logic",
+  "main": "src/index.ts",
+  "types": "src/index.ts"
+}

@@ -1,0 +1,8 @@
+{
+  "name": "@super-optical/tax",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Configurable GST/tax engine, rate schedules, and tax component calculators",
+  "main": "src/index.ts",
+  "types": "src/index.ts"
+}

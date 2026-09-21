@@ -1,0 +1,11 @@
+{
+  "name": "@super-optical/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Super Optical V2 Modular Backend API (NestJS + PostgreSQL)",
+  "scripts": {
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "build": "nest build"
+  }
+}

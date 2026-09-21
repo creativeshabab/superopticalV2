@@ -1,0 +1,66 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Testing and Coverage
+coverage/
+*.lcov
+.nyc_output/
+playwright-report/
+test-results/
+
+# Build & Output
+dist/
+build/
+out/
+.next/
+.output/
+*.tsbuildinfo
+
+# Platform-specific builds
+# Tauri
+src-tauri/target/
+# Capacitor / Mobile
+android/app/build/
+android/.gradle/
+ios/App/build/
+ios/App/Pods/
+
+# Environment files & Secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Database & local data
+*.sqlite
+*.sqlite-journal
+*.db
+*.db-journal
+dump.rdb
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary & scratch
+scratch/
+tmp/
+temp/

@@ -1,0 +1,9 @@
+{
+  "name": "@super-optical/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Super Optical V2 Mobile Application (Capacitor shell for Android/iOS)",
+  "scripts": {
+    "sync": "cap sync"
+  }
+}

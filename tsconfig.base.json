@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@super-optical/types": ["packages/types/src/index.ts"],
+      "@super-optical/types/*": ["packages/types/src/*"],
+      "@super-optical/ui": ["packages/ui/src/index.ts"],
+      "@super-optical/ui/*": ["packages/ui/src/*"],
+      "@super-optical/validation": ["packages/validation/src/index.ts"],
+      "@super-optical/validation/*": ["packages/validation/src/*"],
+      "@super-optical/calculations": ["packages/calculations/src/index.ts"],
+      "@super-optical/calculations/*": ["packages/calculations/src/*"],
+      "@super-optical/optical": ["packages/optical/src/index.ts"],
+      "@super-optical/optical/*": ["packages/optical/src/*"],
+      "@super-optical/tax": ["packages/tax/src/index.ts"],
+      "@super-optical/tax/*": ["packages/tax/src/*"],
+      "@super-optical/sync": ["packages/sync/src/index.ts"],
+      "@super-optical/sync/*": ["packages/sync/src/*"],
+      "@super-optical/printing": ["packages/printing/src/index.ts"],
+      "@super-optical/printing/*": ["packages/printing/src/*"]
+    }
+  }
+}
