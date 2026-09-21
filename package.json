@@ -11,16 +11,37 @@
     "tests/*"
   ],
   "scripts": {
-    "lint": "echo \"Phase 0: Workspace lint gate\"",
-    "typecheck": "echo \"Phase 0: Workspace typecheck gate\"",
-    "test": "echo \"Phase 0: Workspace test gate\""
+    "dev:backend": "npm --workspace=@super-optical/api run start:dev",
+    "dev:web": "npm --workspace=@super-optical/web run dev",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:security": "vitest run tests/security",
+    "test:real-postgres": "vitest run tests/real-postgres",
+    "seed": "tsx database/seeds/seed.ts",
+    "migrate": "tsx database/migrations/migrate.ts"
   },
   "keywords": [
     "optical",
     "pos",
     "clinical",
-    "monorepo"
+    "monorepo",
+    "saas"
   ],
   "author": "Super Optical",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20.14.9",
+    "@types/supertest": "^6.0.2",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^18.0.2",
+    "drizzle-orm": "^0.45.3",
+    "pg": "^8.23.0",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
+  }
 }
